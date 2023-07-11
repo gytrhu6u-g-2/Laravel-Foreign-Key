@@ -6,8 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    {{-- <script src="https://code.jquery.com/jquery-3.4.1.js"></script> --}}
+    <script   src="https://code.jquery.com/jquery-3.7.0.js"   integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="   crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -41,22 +42,25 @@
     </table>
 </body>
 <script>
-    $.ajaxSetup({
-        headers: {'X-CSRF-TOKEN': $("[name='csrf-token']").attr("content") },
-    })
+    // $.ajaxSetup({
+    //     headers: {'X-CSRF-TOKEN': $("[name='csrf-token']").attr("content") },
+    // })
     $('#register').on('click', function(){
-        name = $('input[name="name"]').val();
-        department = $('[name="department"]').val();
-        email = $('input[name="email"]').val();
+        var name = $('input[name="name"]').val();
+        var department = $('[name="department"]').val();
+        var email = $('input[name="email"]').val();
 
         $.ajax({
             url: "{{ route('store') }}",
             method:"POST",
             data: {name : name, department : department, email : email},
             dataType: "json",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
         }).done(function(res){
             console.log(res);
-        }).faile(function(){
+        }).fail(function(){
             alert('通信に失敗しました');
         });
     });
