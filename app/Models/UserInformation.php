@@ -16,4 +16,8 @@ class UserInformation extends Model
         'department_id',
         'mail',
     ];
+
+    public function department() {
+        return $this->hasMany(Departmant::class);
+    }
 }

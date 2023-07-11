@@ -14,4 +14,8 @@ class Departmant extends Model
     protected $fillable = [
         'department',
     ];
+
+    public function userInformation() {
+        return $this->belongsTo(UserInformation::class);
+    }
 }
