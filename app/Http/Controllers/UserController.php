@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Models\Departmant;
+use App\Models\UserInformation;
 
 class UserController extends Controller
 {
@@ -12,7 +15,16 @@ class UserController extends Controller
      */
     public function index()
     {
-        return view('index');
+        // $userInformations = UserInformation::all();
+
+        $userInformations = DB::table('userInformations')
+        ->join('departments', 'userInformations.department_id', '=', 'departments.id')
+        ->select('userInformations.*', 'departments.department')
+        ->orderBy('userInformations.id', 'ASC')
+        // ->orderByRaw('CAST(departments.id as SIGNED) ASC')
+        ->get();
+        // dd($userInformations);
+        return view('index', compact('userInformations'));
     }
 
     /**
@@ -29,8 +41,32 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
+        // dd($data);
 
-        dd($data);
+        DB::beginTransaction();
+        try {
+            UserInformation::create([
+                'name' => $data['name'],
+                'department_id' => $data['department'],
+                'mail' => $data['email'],
+            ]);
+            DB::commit();
+        } catch (\Throwable $th) {
+            abort(500);
+            DB::rollBack();
+        }
+
+        $userInformations = DB::table('userInformations')
+        ->join('departments', 'userInformations.department_id', '=', 'departments.id')
+        ->select('userInformations.*', 'departments.department')
+        ->orderBy('userInformations.id', 'ASC')
+        // ->orderByRaw('CAST(departments.id as SIGNED) ASC')
+        ->get();
+
+        $datas = $userInformations[count($userInformations)-1];
+
+
+        return ['datas' => $datas];
     }
 
     /**
