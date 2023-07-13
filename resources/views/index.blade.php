@@ -29,15 +29,21 @@
         {{--
     </form> --}}
 
+    <h1>削除</h1>
+    <input class="inputId" type="text" placeholder="idを入力してください">
+    <button id="delete" type="submit">削除</button>
+
     <h1>登録一覧</h1>
     <table border="1">
         <tr>
+            <th>ID</th>
             <th>名前</th>
             <th>部署</th>
             <th>メールアドレス</th>
         </tr>
         @foreach ($userInformations as $u)
         <tr>
+            <td>{{ $u->id }}</td>
             <td>{{ $u->name }}</td>
             <td>{{ $u->department }}</td>
             <td>{{ $u->mail }}</td>
@@ -75,6 +81,25 @@
             }).fail(function(){
                 alert('通信に失敗しました');
             });
+        });
+    });
+
+
+    // 非同期でデータの削除
+    $('#delete').on('click', function() {
+        var id = $('.inputId').val();
+        $.ajax({
+            url: "{{ route('destroy') }}",
+            method: "POST",
+            data: {id : id},
+            dataType: "json",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        }).done(function(res){
+
+        }).fail(function(){
+            alert('通信に失敗しました');
         });
     });
     

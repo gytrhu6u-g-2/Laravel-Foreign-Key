@@ -17,3 +17,5 @@ use App\Http\Controllers\UserController;
 Route::get('/', [UserController::class, 'index'])->name('index');
 
 Route::post('/store', [UserController::class, 'store'])->name('store');
+
+Route::post('/destroy', [UserController::class, 'destroy'])->name('destroy');
