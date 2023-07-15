@@ -21,9 +21,7 @@ class UserController extends Controller
         ->join('departments', 'userInformations.department_id', '=', 'departments.id')
         ->select('userInformations.*', 'departments.department')
         ->orderBy('userInformations.id', 'ASC')
-        // ->orderByRaw('CAST(departments.id as SIGNED) ASC')
         ->get();
-        // dd($userInformations);
         return view('index', compact('userInformations'));
     }
 
@@ -41,7 +39,6 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-        // dd($data);
 
         DB::beginTransaction();
         try {
@@ -60,7 +57,6 @@ class UserController extends Controller
         ->join('departments', 'userInformations.department_id', '=', 'departments.id')
         ->select('userInformations.*', 'departments.department')
         ->orderBy('userInformations.id', 'ASC')
-        // ->orderByRaw('CAST(departments.id as SIGNED) ASC')
         ->get();
 
         $datas = $userInformations[count($userInformations)-1];
@@ -99,5 +95,20 @@ class UserController extends Controller
     public function destroy(Request $request)
     {
         $id = $request->all();
+
+        $findId = UserInformation::where('id',$id)->get();
+
+        if ($findId->isEmpty()) {
+            return redirect(route('index'));
+        }
+
+        try {
+            UserInformation::destroy($findId);
+        } catch (\Throwable $th) {
+            abort(500);
+            DB::rollBack();
+        }
+
+        return ['id' => $findId];
     }
 }

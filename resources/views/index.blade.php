@@ -17,7 +17,7 @@
     {{-- <form action="" method="post"> --}}
         <label>名前</label>
         <input name="name" type="text" required>
-        <label>職業</label>
+        <label>部署</label>
         <select name="department" id="" required>
             <option value="1">未選択</option>
             <option value="2">営業</option>
@@ -42,7 +42,7 @@
             <th>メールアドレス</th>
         </tr>
         @foreach ($userInformations as $u)
-        <tr>
+        <tr class="table">
             <td>{{ $u->id }}</td>
             <td>{{ $u->name }}</td>
             <td>{{ $u->department }}</td>
@@ -76,7 +76,7 @@
             }
             }).done(function(res){
                 console.log(res);
-                $('tr').eq(-1).after('<tr>'+'<td>'+ res.datas['name'] +'</td>'+'<td>'+ res.datas['department'] +'</td>'+'<td>'+ res.datas['mail'] +'</td>'+'</td>');
+                $('tr').eq(-1).after('<tr class="table">'+'<td>'+ res.datas['id'] +'</td>'+'<td>'+ res.datas['name'] +'</td>'+'<td>'+ res.datas['department'] +'</td>'+'<td>'+ res.datas['mail'] +'</td>'+'</td>');
                 deleteChar();
             }).fail(function(){
                 alert('通信に失敗しました');
@@ -97,9 +97,24 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         }).done(function(res){
+            // idの取得
+            const id = res.id[0]['id'];
+            // tableタグをすべて取得
+            const tableNum = document.querySelectorAll('.table');
 
+            for(let i=0; i < tableNum.length; i++) {
+                // tableタグの小要素の1番目の値を取得
+                let firstElement = tableNum[i].firstElementChild;
+
+                // firstElementとidが同じかを確認
+                if (firstElement.innerHTML == id) {
+                    // 要素を削除
+                    tableNum[i].remove();
+                    break;
+                }
+            }
         }).fail(function(){
-            alert('通信に失敗しました');
+            alert('idが存在しません');
         });
     });
     
