@@ -19,3 +19,5 @@ Route::get('/', [UserController::class, 'index'])->name('index');
 Route::post('/store', [UserController::class, 'store'])->name('store');
 
 Route::post('/destroy', [UserController::class, 'destroy'])->name('destroy');
+
+Route::post('/search', [UserController::class, 'search'])->name('search');

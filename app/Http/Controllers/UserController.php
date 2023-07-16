@@ -18,10 +18,10 @@ class UserController extends Controller
         // $userInformations = UserInformation::all();
 
         $userInformations = DB::table('userInformations')
-        ->join('departments', 'userInformations.department_id', '=', 'departments.id')
-        ->select('userInformations.*', 'departments.department')
-        ->orderBy('userInformations.id', 'ASC')
-        ->get();
+            ->join('departments', 'userInformations.department_id', '=', 'departments.id')
+            ->select('userInformations.*', 'departments.department')
+            ->orderBy('userInformations.id', 'ASC')
+            ->get();
         return view('index', compact('userInformations'));
     }
 
@@ -54,12 +54,12 @@ class UserController extends Controller
         }
 
         $userInformations = DB::table('userInformations')
-        ->join('departments', 'userInformations.department_id', '=', 'departments.id')
-        ->select('userInformations.*', 'departments.department')
-        ->orderBy('userInformations.id', 'ASC')
-        ->get();
+            ->join('departments', 'userInformations.department_id', '=', 'departments.id')
+            ->select('userInformations.*', 'departments.department')
+            ->orderBy('userInformations.id', 'ASC')
+            ->get();
 
-        $datas = $userInformations[count($userInformations)-1];
+        $datas = $userInformations[count($userInformations) - 1];
 
 
         return ['datas' => $datas];
@@ -90,13 +90,15 @@ class UserController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * 削除機能
+     * @param request
+     * @return array
      */
     public function destroy(Request $request)
     {
         $id = $request->all();
 
-        $findId = UserInformation::where('id',$id)->get();
+        $findId = UserInformation::where('id', $id)->get();
 
         if ($findId->isEmpty()) {
             return redirect(route('index'));
@@ -110,5 +112,30 @@ class UserController extends Controller
         }
 
         return ['id' => $findId];
+    }
+
+    /**
+     * 検索結果
+     * @param request
+     * @return array
+     */
+    public function search(Request $request)
+    {
+        $request_id = $request->all();
+        $id = (int) $request_id['id'];
+
+        try {
+            $results = DB::table('userInformations')
+                ->join('departments', 'userInformations.department_id', '=', 'departments.id')
+                ->select('userInformations.*', 'departments.department')
+                ->where('userInformations.id', 'like', "%$id%")
+                ->orderBy('userInformations.id', 'ASC')
+                ->get();
+        } catch (\Throwable $th) {
+            abort(500);
+        }
+
+
+        return ['results' => $results];
     }
 }

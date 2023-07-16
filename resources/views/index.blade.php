@@ -50,6 +50,26 @@
         </tr>
         @endforeach
     </table>
+
+    <div class="search_area">
+        <div class="search_input">
+            <h1>検索</h1>
+            <label>id</label>
+            <input id="search" type="number">
+            <button class="search_btn" type="submit">検索</button>
+        </div>
+
+        <table border="1">
+            <tr>
+                <th>ID</th>
+                <th>名前</th>
+                <th>部署</th>
+                <th>メールアドレス</th>
+            </tr>
+            <tr class="search_result">
+            </tr>
+        </table>
+    </div>
 </body>
 <script>
     // input内の要素削除
@@ -114,9 +134,33 @@
                 }
             }
         }).fail(function(){
-            alert('idが存在しません');
+            alert('IDが存在しません');
         });
     });
+
+
+    // 検索処理
+    $('.search_btn').on('click', function(){
+        id = $('#search').val();
+        
+        $.ajax({
+            url: "{{ route('search') }}",
+            method:"POST",
+            data: {id:id},
+            dataType: "json",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        }).done(function(res){
+            id_results = res.results;
+            id_results.forEach(function(element){
+                $('.search_result').before('<tr class="table">'+'<td>'+ element['id'] +'</td>'+'<td>'+ element['name'] +'</td>'+'<td>'+ element['department'] +'</td>'+'<td>'+ element['mail'] +'</td>'+'</td>');
+            });
+            // console.log(res);
+        }).fail(function(){
+            alert('IDが存在しません')
+        })
+    })
     
 </script>
 

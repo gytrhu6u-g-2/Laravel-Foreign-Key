@@ -6,3 +6,10 @@ table {
 tr th{
     width: 150px;
 }
+
+.search_input {
+    margin-bottom: 10px;
+}
+.search_area {
+    margin-bottom: 100px;
+}
